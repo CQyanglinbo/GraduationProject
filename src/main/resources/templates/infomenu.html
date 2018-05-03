@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>个人中心导航</title>
+	<link href="AmazeUI-2.4.2/assets/css/admin.css" rel="stylesheet" type="text/css">
+	<link href="AmazeUI-2.4.2/assets/css/amazeui.css" rel="stylesheet" type="text/css">
+
+	<link href="css/personal.css" rel="stylesheet" type="text/css">
+	<link href="css/infstyle.css" rel="stylesheet" type="text/css">
+	<script src="AmazeUI-2.4.2/assets/js/jquery.min.js"></script>
+	<script src="AmazeUI-2.4.2/assets/js/amazeui.js"></script>
+</head>
+<body>
+	<aside class="menu" th:fragment="infomenu">
+				<ul>
+					<li class="person active">
+						<a th:href="@{/personalIndex}"><i class="am-icon-user"></i>个人中心</a>
+					</li>
+					<li class="person">
+						<p><i class="am-icon-newspaper-o"></i>个人资料</p>
+						<ul>
+							<li> <a th:href="@{/information}">个人信息</a></li>
+							<li> <a th:href="@{/password}">修改密码</a></li>
+							<li> <a th:href="@{/payPassword}">修改支付密码</a></li>
+						</ul>
+					</li>
+					<li class="person">
+						<p><i class="am-icon-balance-scale"></i>我的交易</p>
+						<ul>
+							<li><a th:href="@{/user/to_order}">订单管理</a></li>
+							<li> <a th:href="@{/user/address}">地址管理</a></li>
+							<li> <a th:href="@{/user/cardlist}">快捷支付</a></li>
+							
+						</ul>
+					</li>
+					<li class="person">
+						<p><i class="am-icon-dollar"></i>我的资产</p>
+						<ul>
+							<li> <a th:href="@{/walletList?pageNo=0}">账户余额</a></li>
+							<li> <a th:href="@{/user/to_recharge}">充值</a></li>
+						</ul>
+					</li>
+					<li class="person">
+						<p><i class="am-icon-qq"></i>在线客服</p>
+						<ul>
+							<li> <a href="consultation.html">商品咨询</a></li>
+							<li> <a href="suggest.html">意见反馈</a></li>							
+							
+							<li> <a href="news.html">我的消息</a></li>
+						</ul>
+					</li>
+				</ul>
+
+			</aside>
+</body>
+</html>
