@@ -1,6 +1,7 @@
 package com.ylb.project.service;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -86,6 +87,14 @@ public class UserServiceImpl implements UserService{
 		addressRepository.save(address);	
 	}
 	/**
+	 * 根据id找到地址
+	 */
+	@Transactional
+	@Override
+	public Address findAddressById(int id) {
+		return addressRepository.findAddressById(id);
+	}
+	/**
 	 * 检查登录密码是否正确
 	 */
 	@Transactional
@@ -97,7 +106,21 @@ public class UserServiceImpl implements UserService{
 		if(!passwordEncoder.matches(pwd.trim(), user.getPassword())){
 			return "密码错误";
 		}
-		return null;
+		return "密码正确";
+	}
+	/**
+	 * 检查支付密码是否正确
+	 */
+	@Transactional
+	@Override
+	public String checkppwd(String ppwd) {
+		SecurityContext ctx = SecurityContextHolder.getContext();  
+		Authentication auth = ctx.getAuthentication();  
+		User user= (User) auth.getPrincipal();
+		if(!user.getPayPassword().equals(ppwd)){
+			return "支付密码错误";
+		}
+		return "支付密码正确";
 	}
 	/**
 	 * 修改密码,修改成功返回登录页面，失败则还是在修改密码页面
@@ -190,6 +213,21 @@ public class UserServiceImpl implements UserService{
 		return ordersRepository.findListByUser(user);
 	}
 	/**
+	 * 返回订单状态为“待付款”的订单
+	 */
+	@Transactional
+	@Override
+	public List<Orders> findListOrderStatus(User user) {
+		List<Orders> orders=ordersRepository.findListByUser(user);
+		List<Orders> statusOrders=new ArrayList<>();
+		for (Orders orders2 : orders) {
+			if(orders2.getOrderStatus().equals("待付款")){
+				statusOrders.add(orders2);
+			}
+		}
+		return statusOrders;
+	}
+	/**
 	 * 根据卡号找到银行卡
 	 */
 	@Transactional
@@ -230,6 +268,9 @@ public class UserServiceImpl implements UserService{
 	public Orders findOrderById(int id) {
 		return ordersRepository.findById(id);	
 	}
+	
+	
+	
 	
 
 }

@@ -13,6 +13,7 @@ import com.ylb.project.model.Commodity;
 import com.ylb.project.model.SmallType;
 @Repository
 public interface CommodityRepository extends CrudRepository<Commodity, Integer>{
+	public Commodity save(Commodity commodity);
 	public List<Commodity> findBybigType(BigType bigType);
 	public Commodity findByproductId(int productId);
 	//public List<Commodity> findBySmallType(SmallType smallType);

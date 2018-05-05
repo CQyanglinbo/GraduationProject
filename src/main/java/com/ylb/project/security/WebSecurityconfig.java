@@ -25,17 +25,19 @@ public class WebSecurityconfig extends WebSecurityConfigurerAdapter{
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
 	}
+	@Override
 	protected void configure(HttpSecurity http) throws Exception{
 		//允许所有用户访
 		http.authorizeRequests()
-			.antMatchers("/AmazeUI-2.4.2/**","/basic/**","/css/**","/images/**","/js/**").permitAll()
-			.antMatchers("/search","/home","home/find","/home/introduction","/register","/user/do_register","/user/verifyUser","/user/do_login").permitAll()
+			.antMatchers("/AmazeUI-2.4.2/**","/basic/**","/css/**","/images/**","/js/**","upload/**").permitAll()
+			.antMatchers("/search","/home","home/find","/home/introduction","/register","/user/do_register","/user/verifyUser","/login").permitAll()
 			.anyRequest().authenticated()//其他的都需要授权
 		.and()
 		.formLogin()
 			.loginPage("/login")//指定登录页面
-			.loginProcessingUrl("/user/do_login")
+			.loginProcessingUrl("/login")
 			.defaultSuccessUrl("/home")
+			.failureUrl("/login?error")
 			.usernameParameter("userName")
 			.passwordParameter("password")
 			.and()

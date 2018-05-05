@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +24,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSONObject;
+
 import com.ylb.project.model.Address;
 import com.ylb.project.model.Bankcard;
 import com.ylb.project.model.Commodity;
 import com.ylb.project.model.Orders;
 import com.ylb.project.model.Record;
 import com.ylb.project.model.User;
+import com.ylb.project.security.MyUserDetailsService;
 import com.ylb.project.service.HomeServiceImpl;
 import com.ylb.project.service.UserServiceImpl;
 
@@ -40,18 +42,8 @@ public class UserController {
 	private UserServiceImpl userService;
 	@Autowired
 	private HomeServiceImpl homeService;
-	
-	/**
-	 * 登录
-	 * @param model
-	 * @param user
-	 * @return
-	 */
-	@RequestMapping(value="/do_login",method=RequestMethod.POST)
-	public ModelAndView do_login(ModelAndView model,User user){
-		model.setViewName("home");
-		return model;
-	}
+	@Autowired
+	private MyUserDetailsService myUserDetailsService;
 	/**
 	 * 注册验证用户是否已注册过
 	 * @param request
@@ -62,6 +54,7 @@ public class UserController {
 	public String verifyUser(HttpServletRequest request){
 		String name=request.getParameter("userName");
 		if(userService.findUserByUserName(name)!=null){
+			System.out.println("该用户已存在");
 			return "该用户已存在";
 		}
 		return "该用户不存在";
@@ -148,6 +141,16 @@ public class UserController {
 		return userService.checkpwd(pwd);
 	}
 	/**
+	 * 支付密码
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value={"/wrongppwd","/user/wrongppwd"})
+	public String wrongPayPassword(HttpServletRequest request){
+		String ppwd=request.getParameter("ppwd");
+		return userService.checkppwd(ppwd);
+	}
+	/**
 	 * 修改支付密码
 	 * @param request
 	 * @return
@@ -160,7 +163,41 @@ public class UserController {
 		
 		return userService.updatePayPassword(oldPwd, newPwd);
 	}
-	
+	@ResponseBody
+	@RequestMapping(value={"/fileUpload","/user/fileUpload"})
+	public String fileUpload(MultipartFile file){
+		//得到当前登录用户
+		SecurityContext ctx = SecurityContextHolder.getContext();  
+		Authentication auth = ctx.getAuthentication();  
+		User user= (User) auth.getPrincipal();
+		
+		//判断文件是否为空
+		if(file.isEmpty()){
+			return "false";
+		}
+		//得到文件的名字
+		String fileName=file.getOriginalFilename();
+		String path=System.getProperty("user.dir")+"\\src\\main\\resources\\static"+"/upload";
+		File dest=new File(path+"/"+fileName);
+		if(!dest.getParentFile().exists()){//判断文件父目录是否存在
+			dest.getParentFile().mkdir();
+		}
+		user.setImageUrl("E:\\train\\eclipse\\MAVEN\\GraduationProject\\src\\main\\resources\\static"+"\\upload\\"+fileName);
+		userService.save(user);
+		//保存文件
+		try {
+			file.transferTo(dest);
+			return "true";
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "false";
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "false";
+		}
+	}
 	/**
 	 * 修改用户信息
 	 * @param request
@@ -233,6 +270,7 @@ public class UserController {
 		bankcard.setIDnumber(IDnumber);
 		bankcard.setRealName(realName);
 		bankcard.setTelephone(telephone);
+		bankcard.setBanlance(2000);
 		bankcard.setUser(user);
 		userService.save(bankcard);
 		return "redirect:/user/cardlist";

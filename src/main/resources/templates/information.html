@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 <title>个人资料</title>
 <link href="../AmazeUI-2.4.2/assets/css/admin.css" rel="stylesheet"
 	type="text/css">
@@ -38,8 +40,8 @@
 
 						<div class="filePic">
 							<form action="" method="post" enctype="multipart/form-data">
-								<input type="file" class="inputPic" allowexts="gif,jpeg,jpg,png,bmp" accept="image/*"> 
-								<img class="am-circle am-img-thumbnail" src="../images/getAvatar.do.jpg" alt="点击上传头像"></img>
+								<input type="file" id="file" class="inputPic" allowexts="gif,jpeg,jpg,png,bmp" onchange="fileUpload()" accept="image/*"> 
+								<img class="am-circle am-img-thumbnail" src="../images/getAvatar.do.jpg" th:src="@{${user.imageUrl}}" alt="点击上传头像" ></img>
 							</form>
 						</div>
 
@@ -130,15 +132,25 @@
 	</div>
 	<div th:replace="footer::footer"></div>
 	<script type="text/javascript">
-	function preview(file) {
-		  var prev = $(".am-circle am-img-thumbnail");
-		  if (file.files && file.files[0]) {
-		   	var reader = new FileReader();
-		   	reader.onload = function (evt) {
-		   		prev.attr("src",evt.target.result);   
-		  	}
-		   	reader.readAsDataURL(file.files[0]);
-		 }
+	function fileUpload(){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		var formData=new FormData();
+		formData.append('file',$("#file")[0].files[0]);
+		$.ajax({
+			url:"http://localhost:8080/user/fileUpload",
+			type:"post",
+			headers:{header:token},
+			beforeSend:function(xhr) {
+                xhr.setRequestHeader(header,token);
+            },
+            data:formData,
+            processData:false,
+            contentType:false
+		}).done(function(res){
+		}).fial(function(res){
+			
+		});
 	}
 
 	</script>

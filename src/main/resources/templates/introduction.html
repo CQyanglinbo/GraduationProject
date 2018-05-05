@@ -20,6 +20,7 @@
 <script type="text/javascript" src="../js/jquery.imagezoom.min.js"></script>
 <script type="text/javascript" src="../js/jquery.flexslider.js"></script>
 <script type="text/javascript" src="../js/list.js"></script>
+<!-- <script type="text/javascript" src="../js/jquery.js"></script> -->
 </head>
 <body>
 	<!-- 顶部 -->
@@ -96,7 +97,7 @@
 							alt="细节展示放大镜特效" th:rel="@{${commodity.imgUrl}}" class="jqzoom" /></a>
 					</div>
 					<ul class="tb-thumb" id="thumblist">
-						<li class="tb-selected">
+						<li class="tb-selected" th:value="${commodity.productId}">
 							<div class="tb-pic tb-s40">
 								<a href="#"><img th:src="@{${commodity.imgUrl}}"
 									mid="@{${commodity.imgUrl}}" big="@{${commodity.imgUrl}}"></a>
@@ -232,7 +233,7 @@
 												<div class="cart-title number">数量</div>
 												<dd>
 													<input id="min" class="am-btn am-btn-default" name="" type="button" value="-" /> 
-													<input id="text_box" name="" type="text" value="1" style="width: 30px;" /> 
+													<input class="text_box" name="" type="text" value="3" style="width: 30px;" /> 
 													<input id="add" class="am-btn am-btn-default" name="" type="button" value="+" /> 
 													<span id="Stock" class="tb-hidden">库存<span class="stock" th:text="${commodity.number}">1000</span>件
 													</span>
@@ -296,12 +297,12 @@
 					</div>
 					<li>
 						<div class="clearfix tb-btn tb-btn-buy theme-login">
-							<a id="LikBuy" title="点此按钮到下一步确认购买信息" th:href="@{/user/buy(param=${commodity.productId})}">立即购买</a>
+							<a id="LikBuy" title="点此按钮到下一步确认购买信息" >立即购买</a>
 						</div>
 					</li>
 					<li>
 						<div class="clearfix tb-btn tb-btn-basket theme-login">
-							<a id="LikBasket" title="加入购物车" th:href="@{/user/addShopcart(param=${commodity.productId})}"><i></i>加入购物车</a>
+							<a id="LikBasket" title="加入购物车"><i></i>加入购物车</a>
 						</div>
 					</li>
 				</div>
@@ -316,7 +317,28 @@
 		<div class="clear"></div>
 		<div th:replace="footer::footer"></div>	
 	</div>
-		
-		
+	<script type="text/javascript">
+	$("#add").on('click',function(){
+        var t=$(this).parent().find('input[class*=text_box]');
+       t.val(parseInt(t.val())+1)
+      });
+	$("#min").on("click",function(){
+       	var t=$(this).parent().find('input[class*=text_box]');
+         t.val(parseInt(t.val())-1)
+         if(parseInt(t.val())<0){
+          	t.val(0);
+          }
+       });
+	$("#LikBuy").on("click",function(){
+		var count=$(".text_box").val();
+		var id=$(".tb-selected").attr("value");
+		window.location.href="/user/buy?param="+id+"&count="+count;
+	});
+	$("#LikBasket").on("click",function(){
+		var count=$(".text_box").val();
+		var id=$(".tb-selected").attr("value");
+		window.location.href="/user/addShopcart?param="+id+"&count="+count;
+	})
+	</script>			
 </body>
 </html>

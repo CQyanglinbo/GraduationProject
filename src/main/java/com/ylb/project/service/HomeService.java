@@ -10,6 +10,7 @@ import com.ylb.project.model.Commodity;
 import com.ylb.project.model.SmallType;
 
 public interface HomeService {
+	public Commodity save(Commodity commodity);
 	public Iterable<BigType> findBTList();
 	public List<SmallType> findSTList(BigType bigType);
 	public List<Commodity> findBybigType(BigType bigType);

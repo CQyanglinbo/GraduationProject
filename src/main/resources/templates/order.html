@@ -88,9 +88,8 @@
 													<ul class="item-list">
 														<li class="td td-item">
 															<div class="item-pic">
-																<a href="#" class="J_MakePoint"> <img
-																	src="../images/kouhong.jpg_80x80.jpg"
-																	class="itempic J_ItemImg">
+																<a href="#" class="J_MakePoint"> 
+																	<img th:src="@{${allOrder.commodity.getImgUrl()}}" class="itempic J_ItemImg">
 																</a>
 															</div>
 															<div class="item-info">
@@ -98,7 +97,7 @@
 																	<a href="#">
 																		<p th:text="${allOrder.commodity.getProductName()}">美康粉黛醉美唇膏 持久保湿滋润防水不掉色</p>
 																		<p class="info-little">
-																			颜色：12#川南玛瑙 <br />包装：一盒装
+																			颜色：随机<br />包装：一盒装
 																		</p>
 																	</a>
 																</div>
@@ -125,10 +124,10 @@
 													</li>
 													<div class="move-right">
 														<li class="td td-status">
-															
+															<div></div>
 														</li>
 														<li class="td td-change">
-															<div class="am-btn am-btn-danger anniu">删除订单</div>
+															<!-- <div class="am-btn am-btn-danger anniu"></div> -->
 														</li>
 													</div>
 												</div>
@@ -178,9 +177,8 @@
 													<ul class="item-list">
 														<li class="td td-item">
 															<div class="item-pic">
-																<a href="#" class="J_MakePoint"> <img
-																	src="../images/kouhong.jpg_80x80.jpg"
-																	class="itempic J_ItemImg">
+																<a href="#" class="J_MakePoint"> 
+																	<img th:src="@{${order.commodity.getImgUrl()}}" class="itempic J_ItemImg">
 																</a>
 															</div>
 															<div class="item-info">
@@ -188,7 +186,7 @@
 																	<a href="#">
 																		<p th:text="${order.commodity.getProductName()}">美康粉黛醉美唇膏 持久保湿滋润防水不掉色</p>
 																		<p class="info-little">
-																			颜色：12#川南玛瑙 <br />包装：裸装
+																			颜色：随机 <br />包装：裸装
 																		</p>
 																	</a>
 																</div>
@@ -276,9 +274,8 @@
 													<ul class="item-list">
 														<li class="td td-item">
 															<div class="item-pic">
-																<a href="#" class="J_MakePoint"> <img
-																	src="../images/kouhong.jpg_80x80.jpg"
-																	class="itempic J_ItemImg">
+																<a href="#" class="J_MakePoint"> 
+																	<img th:src="@{${order1.commodity.getImgUrl()}}" class="itempic J_ItemImg">
 																</a>
 															</div>
 															<div class="item-info">
@@ -286,7 +283,7 @@
 																	<a href="#">
 																		<p th:text="${order1.commodity.getProductName()}">美康粉黛醉美唇膏 持久保湿滋润防水不掉色</p>
 																		<p class="info-little">
-																			颜色：12#川南玛瑙 <br />包装：裸装
+																			颜色：随机<br />包装：裸装
 																		</p>
 																	</a>
 																</div>
@@ -369,9 +366,8 @@
 													<ul class="item-list">
 														<li class="td td-item">
 															<div class="item-pic">
-																<a href="#" class="J_MakePoint"> <img
-																	src="../images/kouhong.jpg_80x80.jpg"
-																	class="itempic J_ItemImg">
+																<a href="#" class="J_MakePoint"> 
+																	<img th:src="@{${order2.commodity.getImgUrl()}}" class="itempic J_ItemImg">
 																</a>
 															</div>
 															<div class="item-info">
@@ -379,7 +375,7 @@
 																	<a href="#">
 																		<p th:text="${order2.commodity.getProductName()}">美康粉黛醉美唇膏 持久保湿滋润防水不掉色</p>
 																		<p class="info-little">
-																			颜色：12#川南玛瑙 <br />包装：裸装
+																			颜色：随机<br />包装：裸装
 																		</p>
 																	</a>
 																</div>
@@ -465,9 +461,8 @@
 													<ul class="item-list">
 														<li class="td td-item">
 															<div class="item-pic">
-																<a href="#" class="J_MakePoint"> <img
-																	src="../images/kouhong.jpg_80x80.jpg"
-																	class="itempic J_ItemImg">
+																<a href="#" class="J_MakePoint"> 
+																	<img th:src="@{${order3.commodity.getImgUrl()}}" class="itempic J_ItemImg">
 																</a>
 															</div>
 															<div class="item-info">
@@ -475,7 +470,7 @@
 																	<a href="#">
 																		<p th:text="${order3.commodity.getProductName()}">美康粉黛醉美唇膏 持久保湿滋润防水不掉色</p>
 																		<p class="info-little">
-																			颜色：12#川南玛瑙 <br />包装：裸装
+																			颜色：随机 <br />包装：裸装
 																		</p>
 																	</a>
 																</div>

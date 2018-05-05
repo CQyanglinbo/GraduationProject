@@ -1,6 +1,8 @@
 package com.ylb.project.controller;
 
 
+import java.security.Principal;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,8 @@ public class lcontroller {
 	/**
 	 * Sign in page.
 	 */
-	@RequestMapping(value="/login",method=RequestMethod.GET)
-	public String login() {
+	@RequestMapping(value="/login")
+	public String login(Model model) {
 		return "login";
 	}
 	@RequestMapping(value="/register",method=RequestMethod.GET)
@@ -46,11 +48,17 @@ public class lcontroller {
 		SecurityContext ctx = SecurityContextHolder.getContext();  
 		Authentication auth = ctx.getAuthentication();  
 		User user= (User) auth.getPrincipal();
-		model.addAttribute("orderList", userService.findListByUser(user));
+		model.addAttribute("orderList", userService.findListOrderStatus(user));
 		return "shopcart";
 	}
 	@RequestMapping(value="/information",method=RequestMethod.GET)
-	public String information() {
+	public String information(Model model) {
+		//得到当前登录的用户
+		SecurityContext ctx = SecurityContextHolder.getContext();  
+		Authentication auth = ctx.getAuthentication();  
+		User user= (User) auth.getPrincipal();
+		System.out.println(user.getImageUrl());
+		model.addAttribute("user",user);
 		return "information";
 	}
 	/**
@@ -121,5 +129,9 @@ public class lcontroller {
 	@RequestMapping(value="/paySuccess",method=RequestMethod.GET)
 	public String paySuccess() {
 		return "paySuccess";
+	}
+	@RequestMapping(value="/error",method=RequestMethod.GET)
+	public String error(){
+		return "error";
 	}
 }

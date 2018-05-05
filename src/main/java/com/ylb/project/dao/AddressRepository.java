@@ -12,6 +12,7 @@ import com.ylb.project.model.User;
 public interface AddressRepository extends CrudRepository<Address, Integer>{
 	public List<Address> findByuser(User user);
 	public void deleteById(int id);
+	public Address findAddressById(int id);
 	@SuppressWarnings("unchecked")
 	public Address save(Address address);
 }

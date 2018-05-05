@@ -101,6 +101,15 @@ public class HomeServiceImpl implements HomeService{
 		
 		return bigTypeRepository.findByTypeName(typeName);
 	}
+	/**
+	 * 修改商品数量
+	 */
+	@Transactional
+	@Override
+	public Commodity save(Commodity commodity) {
+		
+		return commodityRepository.save(commodity);
+	}
 
 	
 

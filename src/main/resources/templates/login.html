@@ -2,8 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="_csrf" th:content="${_csrf.token}"/>
-<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 <title>登录</title>
 <link href="../AmazeUI-2.4.2/assets/css/amazeui.css" th:href="@{/AmazeUI-2.4.2/assets/css/amazeui.css}" rel="stylesheet" media="all"/>
 <link href="../css/dlstyle.css" th:href="@{/css/dlstyle.css}" rel="stylesheet" type="text/css">
@@ -26,7 +24,7 @@
 				<div class="clear"></div>
 
 				<div class="login-form">
-					<form id="f" th:action="@{/user/do_login}" th:method="post">
+					<form id="f" th:action="@{/login}" th:method="post">
 						<div th:if="${param.error}">
                         	<div class="alert alert-danger" th:text="${param.error}">
                             	Invalid username and password.
@@ -77,7 +75,7 @@
 			$("#error").css({'color':'red'});
 			$("#error").html("输入不能为空！");
 		}else {
-			document.getElementById("f").submit();
+			$("#f").submit();
 		} 
 	})
 	$(".in").on("focus",function(){

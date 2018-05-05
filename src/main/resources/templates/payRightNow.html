@@ -3,6 +3,8 @@
 	xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 <title>结算页面</title>
 <link href="../AmazeUI-2.4.2/assets/css/amazeui.css" rel="stylesheet"
 	type="text/css" />
@@ -29,7 +31,7 @@
 				<div class="clear"></div>
 				<ul>
 					<div class="per-border"></div>
-					<li class="user-addresslist defaultAddr" th:each="address2:${addressList}">
+					<li class="user-addresslist" th:each="address2:${addressList}">
 						<div class="address-left">
 							<div class="user DefaultAddr">
 								<span class="buy-address-detail"> 
@@ -67,18 +69,21 @@
 			<div class="logistics">
 				<h3>选择物流方式</h3>
 				<ul class="op_express_delivery_hot">
-					<li data-value="yuantong" class="OP_LOG_BTN  "><i
-						class="c-gap-right" style="background-position: 0px -468px"></i>圆通<span></span></li>
-					<li data-value="shentong" class="OP_LOG_BTN  "><i
-						class="c-gap-right" style="background-position: 0px -1008px"></i>申通<span></span></li>
-					<li data-value="yunda" class="OP_LOG_BTN  "><i
-						class="c-gap-right" style="background-position: 0px -576px"></i>韵达<span></span></li>
-					<li data-value="zhongtong"
-						class="OP_LOG_BTN op_express_delivery_hot_last "><i
-						class="c-gap-right" style="background-position: 0px -324px"></i>中通<span></span></li>
-					<li data-value="shunfeng"
-						class="OP_LOG_BTN  op_express_delivery_hot_bottom"><i
-						class="c-gap-right" style="background-position: 0px -180px"></i>顺丰<span></span></li>
+					<li value="圆通" class="OP_LOG_BTN">
+						<i class="c-gap-right" style="background-position: 0px -468px"></i>圆通<span></span>
+					</li>
+					<li value="申通" class="OP_LOG_BTN">
+						<i class="c-gap-right" style="background-position: 0px -1008px"></i>申通<span></span>
+					</li>
+					<li value="韵达" class="OP_LOG_BTN">
+						<i class="c-gap-right" style="background-position: 0px -576px"></i>韵达<span></span>
+					</li>
+					<li value="中通" class="OP_LOG_BTN">
+						<i class="c-gap-right" style="background-position: 0px -324px"></i>中通<span></span>
+					</li>
+					<li value="顺丰" class="OP_LOG_BTN">
+						<i class="c-gap-right" style="background-position: 0px -180px"></i>顺丰<span></span>
+					</li>
 				</ul>
 			</div>
 			<div class="clear"></div>
@@ -116,7 +121,7 @@
 				<tr id="J_BundleList_s_1911116345_1" class="item-list">
 					<div id="J_Bundle_s_1911116345_1_0" class="bundle  bundle-last">
 						<div class="bundle-main">
-							<ul class="item-content clearfix">
+							<ul class="item-content" th:value="${order.id}">
 								<div class="pay-phone">
 									<li class="td td-item">
 										<div class="item-pic">
@@ -148,10 +153,7 @@
 										<div class="item-amount ">
 											<span class="phone-title">购买数量</span>
 											<div class="sl">
-												<input class="min am-btn" name="" type="button" value="-" />
-												<input class="text_box" name="" type="text" value="3"
-													style="width: 30px;" /> <input class="add am-btn" name=""
-													type="button" value="+" />
+												<span class="text_box" name="" th:text="${order.count}" style="width: 30px;" /> 
 											</div>
 										</div>
 									</div>
@@ -231,16 +233,16 @@
 					
 						
 					<div id="holyshit269" class="submitOrder">
-						<form>
-						<div class="am-form-group">
+						
+						<div class="am-form-group" style="position: absolute;bottom: 0px;">
 							<label for="user-pay-password" class="am-form-label">支付密码:</label>
 							<input id="user-pay-password" type="password" placeholder="请输入支付密码">
 						</div>
 						<div class="go-btn-wrap">
-							<a id="J_Go" href="success.html" class="btn-go" tabindex="0"
+							<a id="J_Go" class="btn-go" tabindex="0"
 								title="点击此按钮，提交订单">结算</a>
 						</div>
-						</form>
+						
 					</div>
 					
 					<div class="clear"></div>
@@ -251,5 +253,63 @@
 	</div>
 	</form>
 	<div th:replace="footer::footer"></div>
+	<script type="text/javascript">
+	/* 点解结算按钮 */
+	$("#J_Go").on("click",function(){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		var addressId=$(".defaultAddr").attr("value");
+		var logistics=$(".selected").text();
+		var message=$(".memo-input J_MakePoint c2c-text-default memo-close").val();
+		var orderId=new Array();
+		$(".item-content").each(function(){
+			orderId.push($(this).attr("value"));
+			
+		});
+		
+		/* alert(orderId.length); */
+		$.ajax({
+			url:"http://localhost:8080/user/account",
+			type:"post",
+			headers:{header:token},
+			beforeSend:function(xhr) {
+                xhr.setRequestHeader(header,token);
+            },
+            traditional:true,
+			data:{orderId:orderId,"ppwd":$("#user-pay-password").val(),"addressId":addressId,"logistics":logistics,"message":message},
+			success:function(data){
+				/* 返回为null的时候就是object，反之就是string类型 */
+				if(typeof(data) == "string"){
+					alert(data);
+				}
+				if(data=="结算成功"){
+					window.location.href="http://localhost:8080/user/to_order";
+				}
+			}
+		});
+		/* console.log(logistics);
+		alert(addressId); */
+	})
+	/* 输入的原支付密码检查*/
+$("#user-pay-password").on("blur",function(){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		$.ajax({
+			url:"http://localhost:8080/user/wrongppwd",
+			type:"post",
+			headers:{header:token},
+			beforeSend:function(xhr) {
+                xhr.setRequestHeader(header,token);
+            },
+			data:{"ppwd":$("#user-pay-password").val()},
+			success:function(data){
+				/* 返回为null的时候就是object，反之就是string类型 */
+				if(typeof(data) == "string"){
+					alert(data);
+				}	
+			}
+		});
+	})
+	</script>
 </body>
 </html>

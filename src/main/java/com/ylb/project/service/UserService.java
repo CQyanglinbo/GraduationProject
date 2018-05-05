@@ -20,10 +20,14 @@ public interface UserService {
 	public List<Address> findByUser(User user);
 	//新增或修改地址
 	public void save(Address address);
+	//根据id找地址
+	public Address findAddressById(int id);
 	//检查密码
 	public String checkpwd(String pwd);
 	//修改密码
 	public String updatePassword(String oldPwd,String newPwd);
+	//检查支付密码
+	public String checkppwd(String ppwd);
 	//修改支付密码
 	public String updatePayPassword(String oldPwd,String newPwd);
 	//修改用户信息
@@ -48,4 +52,6 @@ public interface UserService {
 	public void deleteById(int id);
 	//根据id找出order
 	public Orders findOrderById(int id);
+	//返回订单状态为“待付款”
+	public List<Orders> findListOrderStatus(User user);
 }
