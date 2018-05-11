@@ -31,7 +31,14 @@ public class lcontroller {
 	 * Sign in page.
 	 */
 	@RequestMapping(value="/login")
-	public String login(Model model) {
+	public String login(Model model, String error, String logout) {
+		if (error != null){
+			model.addAttribute("error", "Your username and password is invalid.");
+		}
+        if (logout != null){
+        	model.addAttribute("message", "You have been logged out successfully.");
+        }
+            
 		return "login";
 	}
 	@RequestMapping(value="/register",method=RequestMethod.GET)
@@ -56,7 +63,7 @@ public class lcontroller {
 		//得到当前登录的用户
 		SecurityContext ctx = SecurityContextHolder.getContext();  
 		Authentication auth = ctx.getAuthentication();  
-		User user= (User) auth.getPrincipal();
+		User user=(User) auth.getPrincipal();
 		System.out.println(user.getImageUrl());
 		model.addAttribute("user",user);
 		return "information";

@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
 @Entity
 @Table
 public class BigType {
@@ -21,7 +24,9 @@ public class BigType {
 	private int id;//id
 	private String typeName;//类型名称
 	private String imgUrl;//图片路径
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss",iso=ISO.DATE)
 	private Date createDate;//创建时间
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss",iso=ISO.DATE)
 	private Date editDate;//修改时间
 	private String detail;//商品类型描述
 //	@OneToMany(cascade=CascadeType.ALL)

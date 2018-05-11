@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void save(User user) {
 		Set<Role> roles=new HashSet<>();
-		Role role=roleRepository.findByRoleName("USER");
+		Role role=roleRepository.findByRoleName("ROLE_USER");
 		roles.add(role);
 		user.setRole(role);//给注册用户赋予角色
 		user.setPassword(passwordEncoder.encode(user.getPassword()));//对密码进行加密

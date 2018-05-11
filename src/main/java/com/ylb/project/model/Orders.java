@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,24 +28,29 @@ public class Orders {
 	private String logistics;//物流方式
 	private String mailingFee;//包邮
 	private String orderStatus;//订单状态
-	@ManyToOne
+	
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="u_id1")
 	private User user;
-	@OneToOne(cascade=CascadeType.ALL)
+	
+	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name="a_id1")
 	private Address address;//收货地址
-	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="c_id1")
 	
+	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@JoinColumn(name="c_id1")
 	private Commodity commodity;//商品信息
+	
 	private double total_fee;//总金额
 	private String message;//买方留言
 	private int count;//商品数量
-	@ManyToOne(cascade=CascadeType.ALL)
+	
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="e_id1")//快递信息
 	private Express express;
-	private Date createDate;//创建时间
+	
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss",iso=ISO.DATE)
+	private Date createDate;//创建时间
 
 	
 	public int getId() {

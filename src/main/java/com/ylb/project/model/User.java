@@ -60,11 +60,13 @@ public class User implements UserDetails{
 	private String phone;//电话号码
 	private double balance;//账户余额
 	private String imageUrl;//头像
-	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	
+	@ManyToOne(fetch=FetchType.EAGER)
 	private Role role=new Role(); //用户所对应的角色
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	
+	/*@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	private Set<Address> addresses=new HashSet<>();//用户对应的收货地址
+*/	
 	@Transient
 	private GrantedAuthority[] grantedAuthority;
 	
@@ -171,12 +173,12 @@ public class User implements UserDetails{
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public Set<Address> getAddresses() {
+	/*public Set<Address> getAddresses() {
 		return addresses;
 	}
 	public void setAddresses(Set<Address> addresses) {
 		this.addresses = addresses;
-	}
+	}*/
 	public double getBalance() {
 		return balance;
 	}

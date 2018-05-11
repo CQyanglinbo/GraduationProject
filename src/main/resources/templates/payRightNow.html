@@ -269,7 +269,7 @@
 		
 		/* alert(orderId.length); */
 		$.ajax({
-			url:"http://localhost:8080/user/account",
+			url:"http://localhost:8081/user/account",
 			type:"post",
 			headers:{header:token},
 			beforeSend:function(xhr) {
@@ -283,7 +283,7 @@
 					alert(data);
 				}
 				if(data=="结算成功"){
-					window.location.href="http://localhost:8080/user/to_order";
+					window.location.href="http://localhost:8081/user/to_order";
 				}
 			}
 		});

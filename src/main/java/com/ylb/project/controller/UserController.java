@@ -42,32 +42,20 @@ public class UserController {
 	private UserServiceImpl userService;
 	@Autowired
 	private HomeServiceImpl homeService;
-	@Autowired
-	private MyUserDetailsService myUserDetailsService;
-	/**
-	 * 注册验证用户是否已注册过
-	 * @param request
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value="/user/verifyUser",method=RequestMethod.POST)
-	public String verifyUser(HttpServletRequest request){
-		String name=request.getParameter("userName");
-		if(userService.findUserByUserName(name)!=null){
-			System.out.println("该用户已存在");
-			return "该用户已存在";
-		}
-		return "该用户不存在";
-	}
+	
 	/**
 	 * 注册
 	 * @param user
 	 * @return
 	 */
 	@RequestMapping(value="/do_register",method=RequestMethod.POST)
-	public String do_register(User user){
-		System.out.println("用户名："+user.getUserName());
-		userService.save(user);
+	public String do_register(User user,String error,Model model){
+		if(userService.findUserByUserName(user.getUserName())!=null){
+			model.addAttribute("error", "该用户已存在");
+			return "register";
+		}else{
+			userService.save(user);
+		}
 		return "login";
 	}
 	/**
@@ -163,6 +151,11 @@ public class UserController {
 		
 		return userService.updatePayPassword(oldPwd, newPwd);
 	}
+	/**
+	 * 上传头像
+	 * @param file
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value={"/fileUpload","/user/fileUpload"})
 	public String fileUpload(MultipartFile file){
@@ -182,7 +175,7 @@ public class UserController {
 		if(!dest.getParentFile().exists()){//判断文件父目录是否存在
 			dest.getParentFile().mkdir();
 		}
-		user.setImageUrl("E:\\train\\eclipse\\MAVEN\\GraduationProject\\src\\main\\resources\\static"+"\\upload\\"+fileName);
+		user.setImageUrl("http://localhost:8081/upload/"+fileName);
 		userService.save(user);
 		//保存文件
 		try {
