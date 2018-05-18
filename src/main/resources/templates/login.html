@@ -6,6 +6,7 @@
 <link href="../AmazeUI-2.4.2/assets/css/amazeui.css" th:href="@{/AmazeUI-2.4.2/assets/css/amazeui.css}" rel="stylesheet" media="all"/>
 <link href="../css/dlstyle.css" th:href="@{/css/dlstyle.css}" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="../AmazeUI-2.4.2/assets/js/jquery.min.js" th:src="@{/AmazeUI-2.4.2/assets/js/jquery.min.js}"></script>
+<script type="text/javascript" src="../js/jquery.cookie.js"></script>
 </head>
 <body>
 	<div class="login-boxtitle">
@@ -37,28 +38,15 @@
 				</div>
 				<span id="error" name="error" th:text="${error}" style="color:red;"></span>
 				<div class="login-links">
-					<label for="remember-me"><input id="remember-me"
-						type="checkbox">记住密码</label> <a href="#" class="am-fr">忘记密码</a> <a
-						href="/register" class="zcnext am-fr am-btn-default">注册</a> <br />
+					<label for="remember-me"><input id="remember-me" checked="checked" name="remember-me" type="checkbox">记住密码</label> 
+					
+					<a href="/register" class="zcnext am-fr am-btn-default">注册</a> <br />
 				</div>
 				<div class="am-cf">
 					<input type="button" id="sub" name="" value="登 录"
 						class="am-btn am-btn-primary am-btn-sm"/>
 				</div>
-				<div class="partner">
-					<h3>合作账号</h3>
-					<div class="am-btn-group">
-						<li>
-							<a href="#"><i class="am-icon-qq am-icon-sm"></i><span>QQ登录</span></a>
-						</li>
-						<li>
-							<a href="#"><i class="am-icon-weibo am-icon-sm"></i><span>微博登录</span></a>
-						</li>
-						<li>
-							<a href="#"><i class="am-icon-weixin am-icon-sm"></i><span>微信登录</span></a>
-						</li>
-					</div>
-				</div>
+				
 			</div>
 		</div>
 	</div>
@@ -76,6 +64,88 @@
 	$(".in").on("focus",function(){
 		$("#error").html("");
 	})
+	window.onload = function(){
+    
+    //设置cookie的函数
+    function setCookie(name,value,expdays){
+        var expdate = new Date();
+        //设置cookie过期日期console.log("tty");
+        expdate.setDate(expdate.getDate() + expdays);
+        //添加cookie
+        document.cookie = name + "=" + escape(value) + ";expires=" + expdate.toUTCString();
+        // console.log(document.cookie);
+        
+    }
+
+    //获取cookie
+    function getCookie(name){
+        //获取name在Cookie中起止位置
+        console.log(document.cookie);
+        var start = document.cookie.indexOf(name+"=");
+        console.log(start);
+        //如果找到的话
+        if(start != -1){
+            start = start + name.length + 1;
+            //获取value的终止位置
+            var end = document.cookie.indexOf(";",start);
+            if(end == -1){
+                end = document.cookie.length;
+            }
+            //截获cookie的value值，并返回
+            return unescape(document.cookie.substring(start,end));
+        }
+        return "";
+    }
+
+    //删除cookie
+    function delCookie(name){
+        setCookie(name,"",-1);
+    }
+
+    var form = document.getElementById("sub");
+    form.onclick = function(){
+        //获取表单输入：用户名，密码，是否保存密码
+        var username = document.getElementById("user").value.trim();
+        var password = document.getElementById("password").value.trim();
+        var isRmbPwd = document.getElementById("remember-me").checked;
+        console.log(username);
+        console.log(password);
+        console.log(isRmbPwd);
+
+        //判断用户名，密码是否为空
+        if(username.length != 0 && password.length != 0){
+            //若复选框勾选，则添加cookie，记录密码
+            if(isRmbPwd == true){
+                setCookie("this is username",username,7);
+                setCookie(username,password,7);
+            }else{
+                //否则清楚cookie
+                delCookie("this is username");
+                delCookie(username);
+            }
+        }else{
+            alert("请输入必填字段");
+        }
+    }
+
+    //从cookie中获取用户名
+    var username = getCookie("this is username");
+    console.log(username);
+    //如果用户名为空，则给表单元素赋空值
+    if(username == ""){
+        document.getElementById("user").value="";
+        document.getElementById("password").value="";
+        document.getElementById("remember-me").checked=false;
+    }else{
+        //获取对应的密码，将用户名，密码赋值给表单
+        var password = getCookie(username);
+        console.log(password);
+        document.getElementById("user").value=username;
+        document.getElementById("password").value=password;
+        document.getElementById("remember-me").checked=true;
+    }
+}
+	
 	/* $("#user").on("blur",function(){
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");

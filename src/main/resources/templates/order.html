@@ -3,6 +3,8 @@
 	xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 <title>订单管理</title>
 <link href="../AmazeUI-2.4.2/assets/css/admin.css" rel="stylesheet"
 	type="text/css">
@@ -11,8 +13,9 @@
 
 <link href="../css/personal.css" rel="stylesheet" type="text/css">
 <link href="../css/orstyle.css" rel="stylesheet" type="text/css">
-
-<script src="../AmazeUI-2.4.2/assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="../basic/js/jquery-1.7.min.js"></script>
+<script src="../AmazeUI-2.4.2/assets/js/jquery.min.js"
+	type="text/javascript"></script>
 <script src="../AmazeUI-2.4.2/assets/js/amazeui.js"></script>
 </head>
 <body>
@@ -197,7 +200,7 @@
 														</li>
 														<li class="td td-number">
 															<div class="item-number">
-																<span th:text="${order.count}"></span>
+																<span th:text="${order.count}" id="count"></span>
 															</div>
 														</li>
 														<li class="td td-operation">
@@ -217,13 +220,13 @@
 															<div class="item-status">
 																<p class="Mystatus">等待买家付款</p>
 																<p class="order-info">
-																	<a href="#">取消订单</a>
+																	<a href="#" class="delete" th:value=${order.id}>取消订单</a>
 																</p>
 
 															</div>
 														</li>
-														<li class="td td-change"><a href="pay.html">
-																<div class="am-btn am-btn-danger anniu">一键支付</div>
+														<li class="td td-change"><a href="#">
+																<div class="am-btn am-btn-danger anniu" id="LikBuy" th:value="${order.commodity.getProductId()}">一键支付</div>
 														</a></li>
 													</div>
 												</div>
@@ -356,7 +359,7 @@
 										<div class="order-status3">
 											<div class="order-title">
 												<div class="dd-num">
-													订单编号：<a href="javascript:;" th:text="${order2.id}">1601430</a>
+													订单编号：<a href="javascript:;" th:text="${order2.id}" id="orderid">1601430</a>
 												</div>
 												<span th:text="'成交时间:'+${order2.createDate}">成交时间：2015-12-20</span>
 												<!--    <em>店铺：小桔灯</em>-->
@@ -399,7 +402,7 @@
 												</div>
 												<div class="order-right">
 													<li class="td td-amount">
-														<div class="item-amount" th:text="'合计：'+${order.total_fee}">
+														<div class="item-amount" th:text="'合计：'+${order2.total_fee}">
 															合计：676.00
 														</div>
 													</li>
@@ -410,7 +413,7 @@
 															</div>
 														</li>
 														<li class="td td-change">
-															<div class="am-btn am-btn-danger anniu">确认收货</div>
+															<div class="am-btn am-btn-danger anniu" id="comfire">确认收货</div>
 														</li>
 													</div>
 												</div>
@@ -494,7 +497,7 @@
 												</div>
 												<div class="order-right">
 													<li class="td td-amount">
-														<div class="item-amount" th:text="'合计：'+${order.total_fee}">
+														<div class="item-amount" th:text="'合计：'+${order3.total_fee}">
 															合计：676.00
 														</div>
 													</li>
@@ -522,6 +525,55 @@
 		<div th:replace="infomenu::infomenu"></div>
 	</div>
 	<div th:replace="footer::footer"></div>
-
+	<script type="text/javascript">
+		$(".delete").on("click",function(){
+			var id=$(this).attr("value");
+			var a=$(this);
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");					
+			$.ajax({
+				url:"http://localhost:8081/user/delete_order",
+				type:"post",
+				headers:{header:token},
+				data:{"id":id},
+				beforeSend:function(xhr) {
+					xhr.setRequestHeader(header,token);
+				},
+				success:function(data){
+					if(typeof(data=="string")){
+						alert(data);
+						a.parent().parent().parent().parent().parent().parent().parent().parent().remove();
+					}
+				
+				}
+			});
+		})
+		/*一键支付*/
+	$("#LikBuy").on("click",function(){
+		var count=$("#count").html();
+		
+		var id=$("#LikBuy").attr("value");
+		window.location.href="/user/buy?param="+id+"&count="+count;
+	});
+		/*确认收货*/
+	$("#comfire").on("click",function(){
+		var id=$("#orderid").html();
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		$.ajax({
+			url:"http://localhost:8081/user/confirmed",
+			type:"post",
+			headers:{header:token},
+			data:{"id":id},
+			beforeSend:function(xhr) {
+				xhr.setRequestHeader(header,token);
+			},
+			success:function(data){
+				alert(data);
+				window.location.href="http://localhost:8081/user/to_order";
+			}
+		});
+	})
+	</script>
 </body>
 </html>

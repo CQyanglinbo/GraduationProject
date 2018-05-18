@@ -3,6 +3,8 @@
 	xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 	<title>充值页面</title>
 	<link href="../AmazeUI-2.4.2/assets/css/admin.css" rel="stylesheet" type="text/css">
 	<link href="../AmazeUI-2.4.2/assets/css/amazeui.css" rel="stylesheet" type="text/css">
@@ -51,19 +53,19 @@
 					<div class="am-form-group">
 						<label for="user-old-password" class="am-form-label" >金额</label>
 						<div class="am-form-content">
-							<input type="text" id="user-old-password" placeholder="请输入充值金额" name="money" required>
+							<input type="text" id="balance" placeholder="请输入充值金额" name="money" required>
 						</div>
 					</div>
 					<div class="am-form-group">
 						<label for="user-new-password" class="am-form-label" >支付密码</label>
 						<div class="am-form-content">
-							<input type="password" id="user-new-password" placeholder="请输入支付密码" name="pwd" required>
+							<input type="password" id="ppwd" placeholder="请输入支付密码" name="pwd" required>
 						</div>
 					</div>
 					<div class="am-form-group">
 						<label for="user-confirm-password" class="am-form-label" name="">银行卡</label>
 						<div class="am-form-content">
-							<select name="bankCard" th:filed="*{card}">
+							<select id="bankCard" name="bankCard" th:filed="*{card}">
 								<option>请选择银行卡</option>
                                 <option th:each="card:${cardlist}" th:select="${card.cardNumber}" th:value="${card.cardNumber}" th:text="${card.cardNumber}">hello</option>     
                             </select>
@@ -79,6 +81,44 @@
 	</div>
 	<div th:replace="footer::footer"></div>
 	<script type="text/javascript">
+		/*银行卡余额判断*/
+		$("#bankCard").on("change",function(){
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$.ajax({
+				url:"http://localhost:8081/user/JudgeBalance",
+				type:"post",
+				headers:{header:token},
+				beforeSend:function(xhr) {
+					xhr.setRequestHeader(header,token);
+				},
+				data:{"balance":$("#balance").val(),"bankCard":$(bankCard).val()},
+				success:function(data){
+					if(data=="余额不足"){
+						alert(data);
+					}
+				}
+			});
+		})
+		/*支付密码判断*/
+		$("#ppwd").on("blur",function(){
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$.ajax({
+				url:"http://localhost:8081/user/JudgePpwd",
+				type:"post",
+				headers:{header:token},
+				beforeSend:function(xhr) {
+					xhr.setRequestHeader(header,token);
+				},
+				data:{"ppwd":$("#ppwd").val()},
+				success:function(data){
+					if(data=="支付密码错误"){
+						alert(data);
+					}
+				}
+			});
+		})
 	</script>
 </body>
 </html>

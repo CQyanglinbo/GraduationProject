@@ -118,7 +118,12 @@ public class lcontroller {
 		return "payPassword";
 	}
 	@RequestMapping(value="/personalIndex",method=RequestMethod.GET)
-	public String personalIndex() {
+	public String personalIndex(Model model) {
+		//得到当前登录的用户
+		SecurityContext ctx = SecurityContextHolder.getContext();  
+		Authentication auth = ctx.getAuthentication();  
+		User user= (User) auth.getPrincipal();
+		model.addAttribute("user", user);
 		return "personalIndex";
 	}
 	@RequestMapping(value="/to_addcard",method=RequestMethod.GET)

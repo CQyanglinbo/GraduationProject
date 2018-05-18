@@ -44,6 +44,20 @@ public class UserController {
 	private HomeServiceImpl homeService;
 	
 	/**
+	 * 注册的时候验证用户是否存在
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value={"/user/verifyUser","/verifyUser"})
+	public String verifyUser(HttpServletRequest request){
+		String name=request.getParameter("userName");
+		if(userService.findUserByUserName(name)!=null){
+			return "该用户已存在，请重新输入";
+		}
+		return null;
+	}
+	/**
 	 * 注册
 	 * @param user
 	 * @return
@@ -98,6 +112,11 @@ public class UserController {
 		userService.save(address);
 		return "redirect:/user/address";
 	}
+	/**
+	 * 删除地址
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value={"/delete_address","/user/delete_address"})
 	public String delete_address(HttpServletRequest request){
@@ -198,7 +217,13 @@ public class UserController {
 	 * @throws ParseException
 	 */
 	@RequestMapping(value={"/modifiedUser","/user/modifiedUser"},method=RequestMethod.POST)
-	public String modifiedUser(HttpServletRequest request) throws ParseException{
+	public String modifiedUser(HttpServletRequest request,Model model) throws ParseException{
+		//得到当前登录用户
+		SecurityContext ctx = SecurityContextHolder.getContext();  
+		Authentication auth = ctx.getAuthentication();  
+		User user= (User) auth.getPrincipal();
+		model.addAttribute("user", user);
+		
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 		String nickname=request.getParameter("nickname");
 		String realName=request.getParameter("realName");
@@ -208,9 +233,6 @@ public class UserController {
 		String email=request.getParameter("email");
 		String payPassword=request.getParameter("payPassword");
 		
-		SecurityContext ctx = SecurityContextHolder.getContext();  
-		Authentication auth = ctx.getAuthentication();  
-		User user= (User) auth.getPrincipal();
 		user.setNickname(nickname);
 		user.setGender(gender);
 		user.setRealName(realName);
@@ -269,6 +291,18 @@ public class UserController {
 		return "redirect:/user/cardlist";
 	}
 	/**
+	 * 根据id解绑银行卡
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value={"/deleteCard","/user/deleteCard"})
+	public String deleteCard(HttpServletRequest request){
+		int id=Integer.parseInt(request.getParameter("id"));
+		userService.deleteCardById(id);
+		return "解绑成功";
+	}
+	/**
 	 * 去充值页面
 	 * @param model
 	 * @return
@@ -283,6 +317,41 @@ public class UserController {
 		model.addObject("cardlist",cardlist);
 		model.setViewName("recharge");
 		return model;
+	}
+	/**
+	 * 判断银行卡的余额
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value={"/JudgeBalance","/user/JudgeBalance"})
+	public String JudgeBalance(HttpServletRequest request){
+		double balance=Double.parseDouble(request.getParameter("balance"));
+		String cardNo=request.getParameter("bankCard");
+		Bankcard bankcard=userService.findByCardNumber(cardNo);
+		if(balance>bankcard.getBanlance()){
+			return "余额不足";
+		}
+		return null;
+	}
+	/**
+	 * 判断支付密码是否错误
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value={"/JudgePpwd","/user/JudgePpwd"})
+	public String JudgePpwd(HttpServletRequest request){
+		//得到当前登录的用户
+		SecurityContext ctx = SecurityContextHolder.getContext();  
+		Authentication auth = ctx.getAuthentication();  
+		User user= (User) auth.getPrincipal();
+		
+		String ppwd=request.getParameter("ppwd");
+		if(!ppwd.equals(user.getPayPassword())){
+			return "支付密码错误";
+		}
+		return null;
 	}
 	/**
 	 * 充值

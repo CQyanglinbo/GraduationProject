@@ -26,11 +26,17 @@
 						<div class="topMessage">
 							<div class="menu-hd">
 								<a href="#" target="_top" class="h">
-								<span sec:authorize="isAuthenticated()">
-									<span sec:authentication="principal.authorities">
+									<span sec:authorize="isAuthenticated()">
+										<!-- <span sec:authentication="principal.authorities">
+										</span> -->
+										<span>welcome</span>
+										<span sec:authentication="name"></span>&nbsp;&nbsp;|
+										<a href="#" class="topMessage favorite">
+											<form th:action="@{/logout}" method="post" style="position:absolute;top:0px;left:218px">
+												<input type="submit" value="退出" style="border:0; background-color:#FFFFFF;"/>
+											</form> 
+										</a>
 									</span>
-									<span sec:authentication="name"></span>
-								</span>
 								</a>
 							</div>
 						</div>
@@ -54,9 +60,10 @@
 						</div>
 						<div class="topMessage favorite">
 							<div class="menu-hd">
-								<form th:action="@{/logout}" method="post">
-									<input type="submit" value="退出"/>
-								</form> 
+								<span sec:authorize="not isAuthenticated()">
+									<a th:href="@{/login}">登录</a>|
+									<a th:href="@{/register}">注册</a>
+								</span>
 							</div>
 						</div>
 					</ul>
@@ -77,7 +84,6 @@
 						</form>
 					</div>
 				</div>
-
 				<div class="clear"></div>
 			</div>
 		</article>

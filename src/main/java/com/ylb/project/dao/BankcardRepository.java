@@ -11,5 +11,6 @@ import com.ylb.project.model.User;
 public interface BankcardRepository extends CrudRepository<Bankcard, Integer>{
 	public Bankcard save(Bankcard bankcard);
 	public List<Bankcard> findByUser(User user);
+	public void deleteById(int id);
 	public Bankcard findByCardNumber(String cardNumber);
 }

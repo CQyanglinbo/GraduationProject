@@ -181,6 +181,14 @@ public class UserServiceImpl implements UserService{
 		return bankcardRepository.save(bankcard);
 	}
 	/**
+	 * 解绑银行卡
+	 */
+	@Transactional
+	@Override
+	public void deleteCardById(int id) {
+		bankcardRepository.deleteById(id);	
+	}
+	/**
 	 * 根据用户找出他所绑定的银行卡
 	 */
 	@Transactional
@@ -268,9 +276,5 @@ public class UserServiceImpl implements UserService{
 	public Orders findOrderById(int id) {
 		return ordersRepository.findById(id);	
 	}
-	
-	
-	
-	
 
 }

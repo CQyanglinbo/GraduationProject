@@ -28,7 +28,7 @@ public class BigType {
 	private Date createDate;//创建时间
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss",iso=ISO.DATE)
 	private Date editDate;//修改时间
-	private String detail;//商品类型描述
+	private String detail;//商品广告
 //	@OneToMany(cascade=CascadeType.ALL)
 //	private Set<SmallType> smallTypes=new HashSet<SmallType>();
 	
@@ -67,8 +67,7 @@ public class BigType {
 	}
 	public void setDetail(String detail) {
 		this.detail = detail;
-	}
-	
+	}		
 //	public Set<SmallType> getSmallTypes() {
 //		return smallTypes;
 //	}

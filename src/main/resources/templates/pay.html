@@ -54,9 +54,6 @@
 						<div class="new-addr-btn">
 							<a href="#" class="hidden">设为默认</a> 
 							<span class="new-addr-bar hidden">|</span> 
-							<a href="#">编辑</a> 
-							<span class="new-addr-bar">|</span> 
-							<a href="javascript:void(0);" onclick="delClick(this);">删除</a>
 						</div>
 					</li>
 					<div class="per-border"></div>
@@ -131,8 +128,8 @@
 									</li>
 									<li class="td td-info">
 										<div class="item-props">
-											<span class="sku-line">颜色：10#蜜橘色+17#樱花粉</span> <span
-												class="sku-line">包装：两支手袋装（送彩带）</span>
+											<span class="sku-line">颜色：10#蜜橘色</span> <span
+												class="sku-line">包装：手袋装</span>
 										</div>
 									</li>
 									<li class="td td-price">
@@ -195,16 +192,16 @@
 				<div class="clear"></div>
 			</div>
 			<!--含运费小计 -->
-			<div class="buy-point-discharge ">
+			<!-- <div class="buy-point-discharge ">
 				<p class="price g_price ">
-					合计（含运费） <span>¥</span><em class="pay-sum">244.00</em>
+					合计 <span>¥</span><span class="pay-sum" th:value="${order.total_fee}">244</span>
 				</p>
 			</div>
-
+ -->
 			<!--信息 -->
 			<div class="order-go clearfix">
 				<div class="pay-confirm clearfix">
-					<div class="box">
+					<!-- <div class="box">
 						<div tabindex="0" id="holyshit267" class="realPay">
 							<em class="t">实付款：</em> <span class="price g_price "> <span>¥</span>
 								<em class="style-large-bold-red " id="J_ActualFee">244.00</em>
@@ -227,7 +224,7 @@
 								</span>
 							</p>
 						</div>
-					</div>
+					</div> -->
 
 					<div id="holyshit269" class="submitOrder" style="position: relative;">
 						<div class="am-form-group" style="position: absolute;bottom: 0px;">
@@ -259,10 +256,9 @@
 				orderId.push($(this).attr("value"));
 				
 			});
-			alert(orderId.length);
 			/* alert(orderId.length); */
 			$.ajax({
-				url:"http://localhost:8080/user/account",
+				url:"http://localhost:8081/user/account",
 				type:"post",
 				headers:{header:token},
 				beforeSend:function(xhr) {
@@ -272,10 +268,12 @@
 				data:{orderId:orderId,"ppwd":$("#user-pay-password").val(),"addressId":addressId,"logistics":logistics,"message":message},
 				success:function(data){
 					/* 返回为null的时候就是object，反之就是string类型 */
-					if(typeof(data) == "string"){
-						alert(data);
+					
+					if(data=="余额不足，请充值"){
+						alert("余额不足，请充值");
 					}
 					if(data=="结算成功"){
+						alert("结算成功");
 						window.location.href="http://localhost:8081/user/to_order";
 					}
 				}

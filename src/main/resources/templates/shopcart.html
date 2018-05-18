@@ -127,9 +127,6 @@
 				</div>
 				<span>全选</span>
 			</div>
-			<div class="operations">
-				<a href="#" hidefocus="true" class="deleteAll">删除</a> 
-			</div>
 			<div class="float-bar-right">
 				<div class="amount-sum">
 					<span class="txt">已选商品</span> 
@@ -210,7 +207,7 @@
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");					
 			$.ajax({
-				url:"http://localhost:8080/user/delete_order",
+				url:"http://localhost:8081/user/delete_order",
 				type:"post",
 				headers:{header:token},
 				data:{"id":id},

@@ -36,6 +36,8 @@ public interface UserService {
 	public Bankcard save(Bankcard bankcard);
 	//根据用户信息找出对应的银行卡列表
 	public List<Bankcard> findBankcardListByUser(User user);
+	//根据id解绑银行卡
+	public void deleteCardById(int id);
 	//新增或修改订单
 	public Orders save(Orders order);
 	//根据order删除订单

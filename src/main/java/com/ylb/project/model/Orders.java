@@ -25,6 +25,7 @@ public class Orders {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	private String paySN;
 	private String logistics;//物流方式
 	private String mailingFee;//包邮
 	private String orderStatus;//订单状态
@@ -126,5 +127,10 @@ public class Orders {
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
-	
+	public String getPaySN() {
+		return paySN;
+	}
+	public void setPaySN(String paySN) {
+		this.paySN = paySN;
+	}	
 }

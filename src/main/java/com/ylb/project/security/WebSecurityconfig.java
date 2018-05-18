@@ -1,5 +1,7 @@
 package com.ylb.project.security;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -10,10 +12,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityconfig extends WebSecurityConfigurerAdapter{
+	@Autowired
+	DataSource dataSource;
 	@Autowired
 	MyUserDetailsService myUserDetailsService;
 	@Bean
@@ -30,7 +38,7 @@ public class WebSecurityconfig extends WebSecurityConfigurerAdapter{
 		//允许所有用户访
 		http.authorizeRequests()
 			.antMatchers("/AmazeUI-2.4.2/**","/basic/**","/css/**","/images/**","/js/**","upload/**").permitAll()
-			.antMatchers("/search","/home","home/find","/home/introduction","/register","/user/do_register","/user/verifyUser","/login").permitAll()
+			.antMatchers("/search","/home","home/find","/home/introduction","/register","/user/do_register","/user/verifyUser","/login","/home/do_search").permitAll()
 			.anyRequest().authenticated()//其他的都需要授权
 		.and()
 		.formLogin()

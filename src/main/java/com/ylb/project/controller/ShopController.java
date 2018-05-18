@@ -1,5 +1,7 @@
 package com.ylb.project.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,9 +45,10 @@ public class ShopController {
 	 * @param request
 	 * @param model
 	 * @return
+	 * @throws ParseException 
 	 */
 	@RequestMapping(value = { "/buy", "/user/buy" })
-	public String buyRightNow(HttpServletRequest request, Model model) {
+	public String buyRightNow(HttpServletRequest request, Model model) throws ParseException {
 		// 得到当前登录的用户
 		SecurityContext ctx = SecurityContextHolder.getContext();
 		Authentication auth = ctx.getAuthentication();
@@ -57,6 +60,19 @@ public class ShopController {
 		int count = Integer.parseInt(request.getParameter("count"));
 		// 添加地址列表到结账页面
 		model.addAttribute("addressList", userService.findByUser(user));
+		//设置订单编号
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		String date1=sdf1.format(new Date());
+		Date date=sdf1.parse(date1);
+		String year=new SimpleDateFormat("yyyy").format(date);
+		String month=new SimpleDateFormat("MM").format(date);
+		String day=new SimpleDateFormat("dd").format(date);
+		String hour=new SimpleDateFormat("HH").format(date);
+		String min=new SimpleDateFormat("mm").format(date);
+		String sec=new SimpleDateFormat("ss").format(date);
+		String sNo="p"+year+month+day+hour+min+sec+String.valueOf(id);
+//		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+//		String sNo=String.valueOf(sdf1.format(new Date()))+String.valueOf(id);
 		// 添加订单
 		Orders order = new Orders();
 		order.setCommodity(commodity);
@@ -66,6 +82,7 @@ public class ShopController {
 		order.setTotal_fee(commodity.getPrice() * count);
 		order.setCount(count);
 		order.setOrderStatus("待付款");
+		order.setPaySN(sNo);
 		userService.save(order);
 
 		model.addAttribute("order", order);
@@ -79,9 +96,11 @@ public class ShopController {
 	 * @param request
 	 * @param model
 	 * @return
+	 * @throws ParseException 
 	 */
+	@SuppressWarnings("deprecation")
 	@RequestMapping(value = { "/addShopcart", "/user/addShopcart" })
-	public String addShopcart(HttpServletRequest request, Model model) {
+	public String addShopcart(HttpServletRequest request, Model model) throws ParseException {
 		// 得到当前登录的用户
 		SecurityContext ctx = SecurityContextHolder.getContext();
 		Authentication auth = ctx.getAuthentication();
@@ -91,6 +110,18 @@ public class ShopController {
 		Commodity commodity = homeService.findByproductId(id);
 		// 要购买的商品的数量
 		int count = Integer.parseInt(request.getParameter("count"));
+		//设置订单编号
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		String date1=sdf1.format(new Date());
+		Date date=sdf1.parse(date1);
+		String year=new SimpleDateFormat("yyyy").format(date);
+		String month=new SimpleDateFormat("MM").format(date);
+		String day=new SimpleDateFormat("dd").format(date);
+		String hour=new SimpleDateFormat("HH").format(date);
+		String min=new SimpleDateFormat("mm").format(date);
+		String sec=new SimpleDateFormat("ss").format(date);
+		String sNo="p"+year+month+day+hour+min+sec+String.valueOf(id);
+//		String sNo="p"+String.valueOf(sdf1.format(new Date()))+String.valueOf(id);
 		// 添加订单
 		Orders order = new Orders();
 		order.setCommodity(commodity);
@@ -100,6 +131,7 @@ public class ShopController {
 		order.setTotal_fee(commodity.getPrice() * count);
 		order.setCount(count);
 		order.setOrderStatus("待付款");
+		order.setPaySN(sNo);
 		userService.save(order);
 		// 找到对应用户的订单,并传给前台
 		model.addAttribute("orderList", userService.findListOrderStatus(user));
@@ -150,14 +182,28 @@ public class ShopController {
 		List<Orders> received = new ArrayList<>();
 		for (Orders orders5 : orders) {
 			if (orders5.getOrderStatus().equals("已收货")) {
-				noReceive.add(orders5);
+				received.add(orders5);
 			}
 		}
 		model.addAttribute("received", received);
 
 		return "order";
 	}
-
+	/**
+	 * 确认收货
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value={"/confirmed","/user/confirmed"})
+	public String confirmed(HttpServletRequest request){
+		int id=Integer.parseInt(request.getParameter("id"));
+		Orders order=userService.findOrderById(id);
+		order.setOrderStatus("已收货");
+		userService.save(order);
+		System.out.println("订单状态:"+order.getOrderStatus());
+		return "收货成功";
+	}
 	/**
 	 * 根据id删除订单
 	 * 
@@ -224,7 +270,7 @@ public class ShopController {
 			totalMoney += order.getTotal_fee();
 		}
 		// 支付密码正确
-		if (userService.checkppwd(ppwd) == null) {
+		if (userService.checkppwd(ppwd).equals("支付密码正确")) {
 			// 减去账户余额
 			if (user.getBalance() > totalMoney) {
 				user.setBalance(user.getBalance() - totalMoney);

@@ -54,10 +54,7 @@
 
 						<div class="new-addr-btn">
 							<a href="#" class="hidden">设为默认</a> 
-							<span class="new-addr-bar hidden">|</span> 
-							<a href="#">编辑</a> 
-							<span class="new-addr-bar">|</span> 
-							<a href="javascript:void(0);" onclick="delClick(this);">删除</a>
+							
 						</div>
 					</li>
 					<div class="per-border"></div>
@@ -198,37 +195,13 @@
 			<!--含运费小计 -->
 			<div class="buy-point-discharge ">
 				<p class="price g_price ">
-					合计（含运费） <span>¥</span><em class="pay-sum">244.00</em>
+					合计（含运费） <span>¥</span><em class="pay-sum" th:text="${order.total_fee}">244.00</em>
 				</p>
 			</div>
 
 			<!--信息 -->
 			<div class="order-go clearfix">
 				<div class="pay-confirm clearfix">
-					<div class="box">
-						<div tabindex="0" id="holyshit267" class="realPay">
-							<em class="t">实付款：</em> <span class="price g_price "> <span>¥</span>
-								<em class="style-large-bold-red " id="J_ActualFee">244.00</em>
-							</span>
-						</div>
-
-						<div id="holyshit268" class="pay-address">
-
-							<p class="buy-footer-address">
-								<span class="buy-line-title buy-line-title-type">寄送至：</span> <span
-									class="buy--address-detail"> <span class="province">湖北</span>省
-									<span class="city">武汉</span>市 <span class="dist">洪山</span>区 <span
-									class="street">雄楚大道666号(中南财经政法大学)</span>
-								</span> </span>
-							</p>
-							<p class="buy-footer-address">
-								<span class="buy-line-title">收货人：</span> <span
-									class="buy-address-detail"> <span class="buy-user">艾迪
-								</span> <span class="buy-phone">15871145629</span>
-								</span>
-							</p>
-						</div>
-					</div>
 					<!-- 输入支付密码 -->
 					
 						
@@ -279,23 +252,22 @@
 			data:{orderId:orderId,"ppwd":$("#user-pay-password").val(),"addressId":addressId,"logistics":logistics,"message":message},
 			success:function(data){
 				/* 返回为null的时候就是object，反之就是string类型 */
-				if(typeof(data) == "string"){
-					alert(data);
+				if(data=="余额不足，请充值"){
+					alert("余额不足，请充值");
 				}
 				if(data=="结算成功"){
+					alert("结算成功");
 					window.location.href="http://localhost:8081/user/to_order";
 				}
 			}
 		});
-		/* console.log(logistics);
-		alert(addressId); */
 	})
 	/* 输入的原支付密码检查*/
 $("#user-pay-password").on("blur",function(){
 		var token = $("meta[name='_csrf']").attr("content");
 		var header = $("meta[name='_csrf_header']").attr("content");
 		$.ajax({
-			url:"http://localhost:8080/user/wrongppwd",
+			url:"http://localhost:8081/user/wrongppwd",
 			type:"post",
 			headers:{header:token},
 			beforeSend:function(xhr) {
